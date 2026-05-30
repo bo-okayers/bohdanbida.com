@@ -614,9 +614,60 @@
       align-self: flex-end; 
     }
   }
+  /* ── Password Gate ── */
+  #gate {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  #gate.hidden { display: none; }
+
+  #gate-input {
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    font-family: 'SF Pro Condensed', 'SF Pro Display', -apple-system, 'Helvetica Neue Condensed', 'Arial Narrow', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    font-stretch: condensed;
+    letter-spacing: 0.02em;
+    text-align: center;
+    width: 160px;
+    padding: 6px 0;
+    outline: none;
+    caret-color: #fff;
+    transition: border-color 0.2s;
+  }
+
+  #gate-input::placeholder { color: rgba(255,255,255,0.3); }
+  #gate-input:focus { border-bottom-color: rgba(255,255,255,0.8); }
+
+  #gate-error {
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: rgba(255,255,255,0.4);
+    font-stretch: condensed;
+    height: 22px;
+    transition: opacity 0.2s;
+  }
 </style>
 </head>
 <body>
+
+<!-- ── Password Gate ── -->
+<div id="gate">
+  <input id="gate-input" type="text" placeholder="Password" autocomplete="off" autofocus style="-webkit-text-security: disc;" />
+  <div id="gate-error"></div>
+</div>
 
 <nav>
   <div class="nav-col">
@@ -748,6 +799,31 @@
 </div>
 
 <script>
+  // ── Password Gate ──
+  (function() {
+    const gate  = document.getElementById('gate');
+    const input = document.getElementById('gate-input');
+    const error = document.getElementById('gate-error');
+    const PWD   = '911';
+
+    if (sessionStorage.getItem('bb_auth') === '1') {
+      gate.classList.add('hidden');
+      return;
+    }
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key !== 'Enter') return;
+      if (input.value === PWD) {
+        sessionStorage.setItem('bb_auth', '1');
+        gate.classList.add('hidden');
+      } else {
+        input.value = '';
+        error.textContent = 'Incorrect password';
+        setTimeout(() => error.textContent = '', 1800);
+      }
+    });
+  })();
+
   const navEl = document.querySelector('nav');
   const projectPage = document.getElementById('project-page');
   const homePage    = document.getElementById('home-page');
