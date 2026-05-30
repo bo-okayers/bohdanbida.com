@@ -945,7 +945,12 @@
     projectPage.classList.remove('visible');
     void projectPage.offsetWidth; 
     projectPage.classList.add('visible');
-    window.scrollTo(0, 0);
+    // Use rAF to ensure scroll happens after layout/paint on mobile
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    });
   }
 
   function goHome() {
