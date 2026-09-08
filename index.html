@@ -256,6 +256,11 @@
     line-height: 1.4;
   }
 
+  /* Close button on project page: gap matches name -> description (16px) */
+  .project-info .project-close {
+    margin-top: 16px;
+  }
+
   /* Full-width gallery images below */
   .project-images {
     display: flex;
@@ -613,6 +618,10 @@
       margin-top: 10rem !important; 
       align-self: flex-end; 
     }
+
+    .project-info .project-close {
+      margin-top: 16px !important;
+    }
   }
   /* ── Password Gate ── */
   #gate {
@@ -791,6 +800,10 @@
         <div class="project-info-category" id="proj-category"></div>
         <div class="project-info-year" id="proj-year"></div>
       </div>
+      <button class="panel-close project-close" id="project-close">
+        <span class="close-icon"></span>
+        Close
+      </button>
     </div>
   </div>
 
@@ -1007,6 +1020,7 @@
   });
 
   navLogo.addEventListener('click', goHome);
+  document.getElementById('project-close').addEventListener('click', goHome);
 
   function openPanel(panel) {
     // close whichever is already open first
