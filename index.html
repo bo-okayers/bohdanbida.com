@@ -718,11 +718,11 @@
 
       <div class="card" data-project="0">
         <div class="card-info">
-          <div class="project-title">Project 1</div>
-          <div class="industry-name">Project 1 Industry</div>
+          <div class="project-title">Nect</div>
+          <div class="industry-name">Art Direction + Package Design</div>
         </div>
-        <img src="https://www.figma.com/api/mcp/asset/ed569ec9-4cd9-492a-920e-cf91978b2a2c"
-             alt="Project 1" />
+        <img src="images/nect/cover.jpg"
+             alt="Nect — brand identity and packaging for a portable 4G modem" />
       </div>
 
       <div class="card" data-project="1">
@@ -800,26 +800,63 @@
 
 <script>
   // ── Password Gate ──
+  // The password itself is NOT stored here. Only a salted PBKDF2-SHA256
+  // hash of it is. To change the password, open the browser console on
+  // this page and run:  bbHash('new password')  — then paste the result
+  // into GATE_HASH below.
   (function() {
     const gate  = document.getElementById('gate');
     const input = document.getElementById('gate-input');
     const error = document.getElementById('gate-error');
-    const PWD   = '911';
+
+    const GATE_SALT = 'bohdanbida.com/gate/v1';
+    const GATE_ITER = 150000;
+    const GATE_HASH = '8649be7e6e52ce6fd2f3640878c9737dd07a94d5f7d9c957a32516c3ca5b531e';
+
+    async function hashPassword(pwd) {
+      const enc = new TextEncoder();
+      const key = await crypto.subtle.importKey(
+        'raw', enc.encode(pwd), { name: 'PBKDF2' }, false, ['deriveBits']
+      );
+      const bits = await crypto.subtle.deriveBits(
+        { name: 'PBKDF2', hash: 'SHA-256', salt: enc.encode(GATE_SALT), iterations: GATE_ITER },
+        key, 256
+      );
+      return Array.from(new Uint8Array(bits))
+        .map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Helper for generating a new GATE_HASH from the console.
+    window.bbHash = pwd => hashPassword(pwd).then(h => { console.log(h); return h; });
 
     if (sessionStorage.getItem('bb_auth') === '1') {
       gate.classList.add('hidden');
       return;
     }
 
-    input.addEventListener('keydown', function(e) {
-      if (e.key !== 'Enter') return;
-      if (input.value === PWD) {
-        sessionStorage.setItem('bb_auth', '1');
-        gate.classList.add('hidden');
-      } else {
-        input.value = '';
-        error.textContent = 'Incorrect password';
-        setTimeout(() => error.textContent = '', 1800);
+    if (!(window.crypto && crypto.subtle)) {
+      error.textContent = 'Please open this site over HTTPS';
+      input.disabled = true;
+      return;
+    }
+
+    let checking = false;
+    input.addEventListener('keydown', async function(e) {
+      if (e.key !== 'Enter' || checking) return;
+      checking = true;
+      const attempt = input.value;
+      try {
+        const h = await hashPassword(attempt);
+        if (h === GATE_HASH) {
+          sessionStorage.setItem('bb_auth', '1');
+          gate.classList.add('hidden');
+        } else {
+          input.value = '';
+          error.textContent = 'Incorrect password';
+          setTimeout(() => error.textContent = '', 1800);
+        }
+      } finally {
+        checking = false;
       }
     });
   })();
@@ -844,15 +881,17 @@
 
   const projects = [
     {
-      name: 'Project 1',
-      category: 'Project 1 Industry',
-      year: 'Project 1 Year',
-      desc: 'Project 1 Story Text',
-      heroImg: 'https://www.figma.com/api/mcp/asset/ed569ec9-4cd9-492a-920e-cf91978b2a2c',
-      heroAlt: 'Project 1',
+      name: 'Nect',
+      category: 'Art Direction + Package Design',
+      year: '',
+      desc: 'Brand identity for a startup that introduces a 4G portable modem which works everywhere, can share its Internet connection with other devices, and does not confine you to any given provider.',
+      heroImg: 'images/nect/hero.jpg',
+      heroAlt: 'Nect — brand identity and packaging for a portable 4G modem',
       images: [
-        { src: 'https://www.figma.com/api/mcp/asset/2ec6e81b-fe22-44cc-a386-38bfda40ed3c', alt: 'Project 1 Image 1' },
-        { src: 'https://www.figma.com/api/mcp/asset/fc84c711-4477-46b8-b5ff-780be8f8ba05', alt: 'Project 1 Image 2' },
+        { src: 'images/nect/01.jpg', alt: 'Nect — image 1' },
+        { src: 'images/nect/02.jpg', alt: 'Nect — image 2' },
+        { src: 'images/nect/03.jpg', alt: 'Nect — image 3' },
+        { src: 'images/nect/04.jpg', alt: 'Nect — image 4' },
       ]
     },
     {
