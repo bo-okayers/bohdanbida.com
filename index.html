@@ -256,9 +256,10 @@
     line-height: 1.4;
   }
 
-  /* Close button on project page: gap matches name -> description (16px) */
+  /* Close button on project page: gap below the category/year row equals
+     the gap between the project name and that row (set by JS via --close-gap) */
   .project-info .project-close {
-    margin-top: 16px;
+    margin-top: var(--close-gap, 16px) !important;
   }
 
   /* Full-width gallery images below */
@@ -619,9 +620,6 @@
       align-self: flex-end; 
     }
 
-    .project-info .project-close {
-      margin-top: 16px !important;
-    }
   }
   /* ── Password Gate ── */
   #gate {
@@ -997,6 +995,7 @@
     projectPage.classList.remove('visible');
     void projectPage.offsetWidth; 
     projectPage.classList.add('visible');
+    alignProjectClose();
     // Use rAF to ensure scroll happens after layout/paint on mobile
     requestAnimationFrame(() => {
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -1021,6 +1020,16 @@
 
   navLogo.addEventListener('click', goHome);
   document.getElementById('project-close').addEventListener('click', goHome);
+
+  // Gap from the category/year row down to Close = gap from the name down to that row.
+  function alignProjectClose() {
+    if (!projectPage.classList.contains('visible')) return;
+    const nameRect = document.getElementById('proj-name').getBoundingClientRect();
+    const rowRect  = document.querySelector('.project-info-bottom').getBoundingClientRect();
+    const gap = Math.max(0, Math.round(rowRect.top - nameRect.bottom));
+    document.getElementById('project-close').style.setProperty('--close-gap', gap + 'px');
+  }
+  window.addEventListener('resize', alignProjectClose);
 
   function openPanel(panel) {
     // close whichever is already open first
