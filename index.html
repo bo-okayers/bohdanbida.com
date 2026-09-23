@@ -284,6 +284,12 @@
     object-fit: cover;
   }
 
+  /* Optional narrower image (set per image via `width` in the projects data) */
+  .project-image-full.narrow {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   /* ── Overlay & Panels ── */
   .overlay {
     position: fixed;
@@ -555,7 +561,7 @@
     }
 
     .project-image-full {
-      width: 100%;
+      width: 100% !important;
       aspect-ratio: 16 / 9 !important; 
     }
 
@@ -901,7 +907,7 @@
       heroImg: 'images/nect/1.webp',
       heroAlt: 'Nect — brand identity and packaging for a portable 4G modem',
       images: [
-        { src: 'images/nect/2.webp', alt: 'Nect — 2' },
+        { src: 'images/nect/2.webp', alt: 'Nect — 2', width: '50%' },
         { src: 'images/nect/3.webp', alt: 'Nect — 3' },
         { src: 'images/nect/4.webp', alt: 'Nect — 4' },
         { src: 'images/nect/4.5.webp', alt: 'Nect — 4.5' },
@@ -991,6 +997,10 @@
     p.images.forEach(img => {
       const div = document.createElement('div');
       div.className = 'project-image-full';
+      if (img.width) {
+        div.classList.add('narrow');
+        div.style.width = img.width;
+      }
       const el = document.createElement('img');
       el.src = img.src;
       el.alt = img.alt;
