@@ -19,6 +19,8 @@
     font-stretch: condensed;
     letter-spacing: 0.02em;
     overflow-x: hidden;
+    /* Stop trackpad swipes from triggering browser back/forward navigation */
+    overscroll-behavior-x: none;
   }
 
   /* ── Nav ── */
@@ -87,6 +89,7 @@
     scrollbar-width: none;
     cursor: grab;
     line-height: 0;
+    overscroll-behavior-x: contain;
   }
 
   .gallery-wrap::-webkit-scrollbar { display: none; }
@@ -1094,6 +1097,17 @@
     if (Math.abs(walk) > 4) didDrag = true;
     wrap.scrollLeft = scrollLeft - walk;
   });
+
+  // Horizontal trackpad swipes at the gallery edges (or anywhere off the
+  // gallery) would otherwise trigger the browser's back/forward gesture.
+  document.addEventListener('wheel', e => {
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    const onGallery = homePage.style.display !== 'none' && wrap.contains(e.target);
+    if (!onGallery) { e.preventDefault(); return; }
+    const atStart = wrap.scrollLeft <= 0 && e.deltaX < 0;
+    const atEnd   = wrap.scrollLeft >= wrap.scrollWidth - wrap.clientWidth - 1 && e.deltaX > 0;
+    if (atStart || atEnd) e.preventDefault();
+  }, { passive: false });
 
   document.querySelectorAll('.card').forEach(card => {
     card.addEventListener('mousedown', () => { didDrag = false; });
