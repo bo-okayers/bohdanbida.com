@@ -579,8 +579,7 @@
     .project-image-full {
       width: 100% !important;
       aspect-ratio: 16 / 9 !important; 
-      margin-top: 0 !important;
-      margin-bottom: 0 !important;
+      margin: 0 !important;
     }
 
     .project-image-full img {
@@ -933,7 +932,7 @@
         { src: 'images/nect/4.webp', alt: 'Nect — 4' },
         { src: 'images/nect/4.5.webp', alt: 'Nect — 4.5' },
         { src: 'images/nect/5.webp', alt: 'Nect — 5' },
-        { src: 'images/nect/6.webp', alt: 'Nect — 6' },
+        { src: 'images/nect/6.webp', alt: 'Nect — 6', width: '103.98%', marginTop: '-0.39%', marginBottom: '-0.39%' },
         { src: 'images/nect/7.webp', alt: 'Nect — 7' },
         { src: 'images/nect/8.webp', alt: 'Nect — 8' },
         { src: 'images/nect/9.webp', alt: 'Nect — 9' },
@@ -1011,6 +1010,8 @@
       if (img.width) {
         div.classList.add('narrow');
         div.style.width = img.width;
+        // centre the box whether it is narrower or wider than the column
+        div.style.marginLeft = div.style.marginRight = `calc((100% - ${img.width}) / 2)`;
       }
       if (img.marginTop)    div.style.setProperty('--mt', img.marginTop);
       if (img.marginBottom) div.style.setProperty('--mb', img.marginBottom);
