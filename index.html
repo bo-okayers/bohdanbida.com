@@ -299,6 +299,16 @@
     margin-right: auto;
   }
 
+  /* Two or more images side by side (`row: [...]` in the projects data) */
+  .project-image-row {
+    display: flex;
+    gap: 8px;
+  }
+  .project-image-row .project-image-full {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
   /* Optional extra vertical spacing per image (`marginTop` / `marginBottom`
      in the projects data, as % of the column width so it scales with it) */
   .project-image-full {
@@ -580,6 +590,14 @@
       width: 100% !important;
       aspect-ratio: 16 / 9 !important; 
       margin: 0 !important;
+    }
+
+    .project-image-row {
+      flex-direction: column;
+      gap: 4px;
+    }
+    .project-image-row .project-image-full {
+      aspect-ratio: auto !important;
     }
 
     .project-image-full img {
@@ -966,6 +984,10 @@
         { src: 'images/ed-cosmetics/8.webp', alt: 'E.D. Cosmetics — 8' },
         { src: 'images/ed-cosmetics/9.webp', alt: 'E.D. Cosmetics — 9' },
         { src: 'images/ed-cosmetics/11.webp', alt: 'E.D. Cosmetics — 11' },
+        { row: [
+          { src: 'images/ed-cosmetics/30.webp', alt: 'E.D. Cosmetics — 30' },
+          { src: 'images/ed-cosmetics/31.webp', alt: 'E.D. Cosmetics — 31' },
+        ] },
         { src: 'images/ed-cosmetics/32.webp', alt: 'E.D. Cosmetics — 32' },
         { src: 'images/ed-cosmetics/33.webp', alt: 'E.D. Cosmetics — 33' },
       ]
@@ -1014,7 +1036,18 @@
 
     const imagesWrap = document.getElementById('proj-images');
     imagesWrap.innerHTML = '';
-    p.images.forEach(img => {
+    p.images.forEach(item => {
+      if (item.row) {
+        const row = document.createElement('div');
+        row.className = 'project-image-row';
+        item.row.forEach(img => row.appendChild(buildImage(img)));
+        imagesWrap.appendChild(row);
+      } else {
+        imagesWrap.appendChild(buildImage(item));
+      }
+    });
+
+    function buildImage(img) {
       const div = document.createElement('div');
       div.className = 'project-image-full';
       if (img.width) {
@@ -1030,8 +1063,8 @@
       el.alt = img.alt;
       el.loading = 'lazy';
       div.appendChild(el);
-      imagesWrap.appendChild(div);
-    });
+      return div;
+    }
 
     homePage.style.display = 'none';
     projectPage.style.display = 'block'; 
