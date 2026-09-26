@@ -299,6 +299,13 @@
     margin-right: auto;
   }
 
+  /* Optional extra vertical spacing per image (`marginTop` / `marginBottom`
+     in the projects data, as % of the column width so it scales with it) */
+  .project-image-full {
+    margin-top: var(--mt, 0);
+    margin-bottom: var(--mb, 0);
+  }
+
   /* ── Overlay & Panels ── */
   .overlay {
     position: fixed;
@@ -572,6 +579,8 @@
     .project-image-full {
       width: 100% !important;
       aspect-ratio: 16 / 9 !important; 
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
     }
 
     .project-image-full img {
@@ -919,7 +928,7 @@
         { src: 'images/nect/1.5.webp', alt: 'Nect — 1.5' },
         { src: 'images/nect/1.6.webp', alt: 'Nect — 1.6' },
         { src: 'images/nect/1.9.webp', alt: 'Nect — 1.9' },
-        { src: 'images/nect/2.webp', alt: 'Nect — 2', width: '50%' },
+        { src: 'images/nect/2.webp', alt: 'Nect — 2', width: '50%', marginTop: '5.56%', marginBottom: '12.24%' },
         { src: 'images/nect/3.webp', alt: 'Nect — 3' },
         { src: 'images/nect/4.webp', alt: 'Nect — 4' },
         { src: 'images/nect/4.5.webp', alt: 'Nect — 4.5' },
@@ -1003,6 +1012,8 @@
         div.classList.add('narrow');
         div.style.width = img.width;
       }
+      if (img.marginTop)    div.style.setProperty('--mt', img.marginTop);
+      if (img.marginBottom) div.style.setProperty('--mb', img.marginBottom);
       const el = document.createElement('img');
       el.src = img.src;
       el.alt = img.alt;
