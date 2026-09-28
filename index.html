@@ -198,6 +198,11 @@
     aspect-ratio: 16 / 9;
     background: #000;
     align-self: start;
+    /* Safari: keep rounded clipping stable for animated images (no edge
+       hairline, no repaint flicker on hover) */
+    isolation: isolate;
+    -webkit-mask-image: -webkit-radial-gradient(#fff, #000);
+    transform: translateZ(0);
   }
 
   .project-hero-image img {
@@ -285,6 +290,9 @@
     border-radius: 10px;
     overflow: hidden;
     background: #000;
+    isolation: isolate;
+    -webkit-mask-image: -webkit-radial-gradient(#fff, #000);
+    transform: translateZ(0);
   }
 
   .project-image-full img {
