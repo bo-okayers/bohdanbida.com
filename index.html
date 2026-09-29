@@ -295,7 +295,8 @@
     transform: translateZ(0);
   }
 
-  .project-image-full img {
+  .project-image-full img,
+  .project-image-full video {
     width: 100%;
     display: block;
     object-fit: cover;
@@ -608,7 +609,8 @@
       aspect-ratio: auto !important;
     }
 
-    .project-image-full img {
+    .project-image-full img,
+    .project-image-full video {
       width: 100%;
       height: 100%;
       object-fit: cover !important;
@@ -1023,7 +1025,7 @@
         ] },
         { row: [
           { src: 'images/geme-wallet/5-colors.webp', alt: 'Geme wallet — colours' },
-          { src: 'images/geme-wallet/6-shapes.webp', alt: 'Geme wallet — layout elements' },
+          { video: 'images/geme-wallet/6-shapes.mp4', poster: 'images/geme-wallet/6-shapes-poster.webp', alt: 'Geme wallet — layout elements' },
         ] },
         { src: 'images/geme-wallet/7.webp', alt: 'Geme wallet — 7' },
         { src: 'images/geme-wallet/18.webp', alt: 'Geme wallet — 18' },
@@ -1094,10 +1096,22 @@
       }
       if (img.marginTop)    div.style.setProperty('--mt', img.marginTop);
       if (img.marginBottom) div.style.setProperty('--mb', img.marginBottom);
-      const el = document.createElement('img');
-      el.src = img.src;
-      el.alt = img.alt;
-      el.loading = 'lazy';
+      let el;
+      if (img.video) {
+        el = document.createElement('video');
+        el.src = img.video;
+        if (img.poster) el.poster = img.poster;
+        el.autoplay = true; el.loop = true; el.muted = true; el.playsInline = true;
+        el.setAttribute('muted', ''); el.setAttribute('playsinline', '');
+        el.preload = 'metadata';
+        el.setAttribute('aria-label', img.alt || '');
+        requestAnimationFrame(() => { const p = el.play(); if (p && p.catch) p.catch(() => {}); });
+      } else {
+        el = document.createElement('img');
+        el.src = img.src;
+        el.alt = img.alt;
+        el.loading = 'lazy';
+      }
       div.appendChild(el);
       return div;
     }
